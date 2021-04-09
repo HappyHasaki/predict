@@ -14,5 +14,6 @@
             <![CDATA[jdbc:mysql://localhost:3306/predict?useSSL=false&useUnicode=true&characterEncoding=utf-8&serverTimezone = GMT&allowPublicKeyRetrieval=true]]></property>
         <property name="connection.driver_class">com.mysql.cj.jdbc.Driver</property>
         <mapping class="com.example.predict.entity.ClosingEntity"/>
+        <mapping class="com.example.predict.entity.PredictionEntity"/>
     </session-factory>
 </hibernate-configuration>
