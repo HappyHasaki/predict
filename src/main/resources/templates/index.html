@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>ECharts</title>
+    <!-- 引入 echarts.js -->
+    <!-- 这里是加载刚下好的echarts.min.js，注意路径 -->
+    <script src="../static/echarts.min.js"
+            th:src="@{echarts.min.js}"></script>
+    <script src="../static/jquery.min.js"
+            th:src="@{jquery.min.js}"></script>
+</head>
+<body>
+<!--&lt;!&ndash; 为ECharts准备一个具备大小（宽高）的Dom &ndash;&gt;-->
+<!--<div id="main" style="width: 960px;height:540px;"></div>-->
+<div style="width:960px;height:50px;text-align:center;align-self: center;" id="predict">
+    <p style="text-align:center;font-size: 25px"></p>
+</div>
+<div title="000001.SZ 平安银行" style="width: 1800px;height: 540px;border: 1px solid #E0E0E0;align-self: center;"
+     id="kline_1" class=""></div>
+<script src="echarts.min.js"></script>
+<script type="text/javascript">
+    // 数据意义：开盘(open)，收盘(close)，最低(lowest)，最高(highest)
+    var code = getQueryVariable("code");
+    var data0, stock;
+    if (code === '1') {
+        stock = '000001.SZ(平安银行)';
+        data0 = splitData([
+            ['2021/3/11', 20.58, 21.27, 20.56, 21.38],
+            ['2021/3/12', 21.37, 21.48, 21.2, 21.7],
+            ['2021/3/15', 21.4, 21.6, 21.11, 22.12],
+            ['2021/3/16', 21.6, 21.66, 21.27, 22.11],
+            ['2021/3/17', 21.45, 21.2, 20.9, 21.55],
+            ['2021/3/18', 21.3, 21.73, 21, 21.73],
+            ['2021/3/19', 21.53, 20.47, 20.37, 21.65],
+            ['2021/3/22', 20.55, 21.55, 20.53, 21.55],
+            ['2021/3/23', 21.57, 21.23, 20.96, 21.65],
+            ['2021/3/24', 21.21, 20.53, 20.45, 21.28],
+            ['2021/3/25', 20.58, 20.75, 20.4, 20.83],
+            ['2021/3/26', 20.84, 21.14, 20.76, 21.4],
+            ['2021/3/29', 21.28, 21.49, 21.2, 21.65],
+            ['2021/3/30', 21.38, 21.93, 21.21, 21.93],
+            ['2021/3/31', 21.77, 22.01, 21.6, 22.07],
+            ['2021/4/1', 22.08, 21.78, 21.5, 22.11],
+            ['2021/4/2', 21.7, 21.5, 21.36, 21.73],
+            ['2021/4/6', 21.55, 21.68, 21.51, 22.09],
+            ['2021/4/7', 21.88, 21.64, 21.31, 21.93],
+            ['2021/4/8', 21.46, 21.56, 21.33, 21.73],
+            ['2021/4/9', 21.71, 21.3, 21.08, 21.72]
+        ]);
+    } else if (code === '2') {
+        stock = '000002.SZ(万科A)';
+        data0 = splitData([
+            ['2021-03-11', 30.76, 31.15, 30.68, 31.46],
+            ['2021-03-12', 31.1, 31.49, 30.66, 32.36],
+            ['2021-03-15', 31.3, 31.44, 31.25, 31.88],
+            ['2021-03-16', 31.49, 32.9, 31.3, 33.16],
+            ['2021-03-17', 32.65, 32.71, 32.36, 33.43],
+            ['2021-03-18', 32.6, 32.7, 32.48, 33.28],
+            ['2021-03-19', 32.5, 31.2, 30.85, 32.5],
+            ['2021-03-22', 30.86, 31.63, 30.85, 31.74],
+            ['2021-03-23', 31.61, 31.42, 31.14, 31.66],
+            ['2021-03-24', 31.42, 30.76, 30.4, 31.5],
+            ['2021-03-25', 30.77, 30.55, 30.4, 30.95],
+            ['2021-03-26', 30.6, 30.72, 30.52, 30.96],
+            ['2021-03-29', 30.68, 31.0, 30.32, 31.33],
+            ['2021-03-30', 30.99, 31.37, 30.8, 31.69],
+            ['2021-03-31', 30.97, 30.0, 29.73, 30.97],
+            ['2021-04-01', 30.0, 29.83, 29.57, 30.15],
+            ['2021-04-02', 30.0, 30.0, 29.65, 30.08],
+            ['2021-04-06', 30.0, 29.43, 29.22, 30.0],
+            ['2021-04-07', 29.5, 29.7, 29.27, 29.72],
+            ['2021-04-08', 29.4, 29.17, 28.98, 29.48],
+            ['2021-04-09', 29.3, 28.86, 28.73, 29.32]
+        ]);
+    } else if (code === '4') {
+        stock = '000004.SZ(国华网安)';
+        data0 = splitData([
+            ['2021-03-11', 17.12, 17.48, 16.88, 17.6],
+            ['2021-03-12', 17.52, 17.19, 17.06, 17.54],
+            ['2021-03-15', 17.17, 17.06, 16.8, 17.25],
+            ['2021-03-16', 17.04, 17.41, 16.9, 17.42],
+            ['2021-03-17', 17.32, 17.84, 17.22, 17.87],
+            ['2021-03-18', 17.76, 17.5, 17.46, 17.84],
+            ['2021-03-19', 17.5, 17.63, 17.32, 17.74],
+            ['2021-03-22', 17.52, 17.72, 17.44, 17.79],
+            ['2021-03-23', 17.72, 17.59, 17.51, 17.94],
+            ['2021-03-24', 17.51, 17.34, 17.28, 17.7],
+            ['2021-03-25', 17.35, 17.39, 17.15, 17.65],
+            ['2021-03-26', 17.4, 17.59, 17.2, 17.63],
+            ['2021-03-29', 17.64, 17.4, 17.3, 17.75],
+            ['2021-03-30', 17.58, 17.21, 17.2, 17.58],
+            ['2021-03-31', 17.34, 17.09, 16.97, 17.34],
+            ['2021-04-01', 17.1, 17.3, 16.93, 17.39],
+            ['2021-04-02', 17.3, 17.29, 17.12, 17.42],
+            ['2021-04-06', 17.3, 17.54, 17.24, 17.55],
+            ['2021-04-07', 17.54, 17.59, 17.4, 17.74],
+            ['2021-04-08', 17.6, 17.32, 17.32, 17.62],
+            ['2021-04-09', 17.38, 17.4, 17.21, 17.56],
+        ]);
+    }
+
+    $.ajax({
+        type: "get",//向后台请求的方式，有post，get两种方法
+        url: "/api/prediction?code=" + code,//url填写的是请求的路径
+        cache: false,//缓存是否打开
+        data: {},
+        dataType: 'json',//请求的数据类型
+        success: function (data) {//请求的返回成功的方法
+            if (data != null) {
+                var p = document.getElementById("predict");
+                var price = data[0].predictPrice;
+                var time = data[0].createTime;
+                if (price === 5) {
+                    p.innerText = stock + "预测波动为+2%以上 " + time;
+                } else if (price === 4) {
+                    p.innerText = stock + "预测波动为+1%到+2%之间 " + time;
+                } else if (price === 3) {
+                    p.innerText = stock + "预测波动为0到+1%之间 " + time;
+                } else if (price === 2) {
+                    p.innerText = stock + "预测波动为-1%到0之间 " + time;
+                } else if (price === 1) {
+                    p.innerText = stock + "预测波动为-1%到-2%之间 " + time;
+                } else {
+                    p.innerText = stock + "预测波动为-2%以上 " + time;
+                }
+                p.style = "text-align:center;font-size: 25px"
+            } else {
+                alert("加载失败");
+            }
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {//请求的失败的返回的方法
+            alert("小伙子,出异常了");
+        }
+    });
+
+    function getQueryVariable(variable) {
+        var query = window.location.search.substring(1);
+        var vars = query.split("&");
+        for (var i = 0; i < vars.length; i++) {
+            var pair = vars[i].split("=");
+            if (pair[0] == variable) {
+                return pair[1];
+            }
+        }
+        return (false);
+    }
+
+    function splitData(rawData) {
+        var categoryData = [];
+        var values = []
+        for (var i = 0; i < rawData.length; i++) {
+            categoryData.push(rawData[i].splice(0, 1)[0]);
+            values.push(rawData[i])
+        }
+        return {
+            categoryData: categoryData,
+            values: values
+        };
+    }
+
+    function calculateMA(dayCount) {
+        var result = [];
+        for (var i = 0, len = data0.values.length; i < len; i++) {
+            if (i < dayCount) {
+                result.push('-');
+                continue;
+            }
+            var sum = 0;
+            for (var j = 0; j < dayCount; j++) {
+                sum += data0.values[i - j][1];
+            }
+            result.push(sum / dayCount);
+        }
+        return result;
+    }
+
+    var option = {
+        title: {
+            text: stock,
+            left: 0
+        },
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'line'
+            }
+        },
+        legend: {
+            data: ['日K', 'MA5', 'MA10', 'MA20', 'MA30']
+        },
+        grid: {
+            left: '10%',
+            right: '10%',
+            bottom: '15%'
+        },
+        xAxis: {
+            type: 'category',
+            data: data0.categoryData,
+            scale: true,
+            boundaryGap: false,
+            axisLine: {onZero: false},
+            splitLine: {show: false},
+            splitNumber: 20,
+            min: 'dataMin',
+            max: 'dataMax'
+        },
+        yAxis: {
+            scale: true,
+            splitArea: {
+                show: true
+            }
+        },
+        dataZoom: [
+            {
+                type: 'inside',
+                start: 0,
+                end: 100
+            },
+            {
+                show: true,
+                type: 'slider',
+                y: '90%',
+                start: 0,
+                end: 100
+            }
+        ],
+        series: [
+            {
+                name: '日K',
+                type: 'candlestick',
+                data: data0.values,
+                itemStyle: {
+                    normal: {
+                        color: '#FD1050',
+                        color0: '#0CF49B',
+                        borderColor: '#FD1050',
+                        borderColor0: '#0CF49B'
+                    }
+                },
+                markPoint: {
+                    label: {
+                        normal: {
+                            formatter: function (param) {
+                                return param != null ? Math.round(param.value) : '';
+                            }
+                        }
+                    },
+                    data: [
+                        {
+                            name: 'XX标点',
+                            coord: ['2021/3/11', 21.38],
+                            value: 21.38,
+                            itemStyle: {
+                                normal: {color: 'rgb(0,128,0)'}
+                            }
+                        },
+                        {
+                            name: 'highest value',
+                            type: 'max',
+                            valueDim: 'highest'
+                        },
+                        {
+                            name: 'lowest value',
+                            type: 'min',
+                            valueDim: 'lowest'
+                        },
+                        {
+                            name: 'average value on close',
+                            type: 'average',
+                            valueDim: 'close'
+                        }
+                    ],
+                    tooltip: {
+                        formatter: function (param) {
+                            return param.name + '<br>' + (param.data.coord || '');
+                        }
+                    }
+                },
+                markLine: {
+                    symbol: ['none', 'none'],
+                    data: [
+                        // [
+                        //     {
+                        //         name: 'from lowest to highest',
+                        //         type: 'min',
+                        //         valueDim: 'lowest',
+                        //         symbol: 'circle',
+                        //         symbolSize: 10,
+                        //         label: {
+                        //             normal: {show: false},
+                        //             emphasis: {show: false}
+                        //         }
+                        //     },
+                        //     {
+                        //         type: 'max',
+                        //         valueDim: 'highest',
+                        //         symbol: 'circle',
+                        //         symbolSize: 10,
+                        //         label: {
+                        //             normal: {show: false},
+                        //             emphasis: {show: false}
+                        //         }
+                        //     }
+                        // ],
+                        {
+                            name: 'min line on close',
+                            type: 'min',
+                            valueDim: 'close'
+                        },
+                        {
+                            name: 'max line on close',
+                            type: 'max',
+                            valueDim: 'close'
+                        }
+                    ]
+                }
+            },
+            {
+                name: 'MA5',
+                type: 'line',
+                data: calculateMA(5),
+                smooth: true,
+                lineStyle: {
+                    normal: {opacity: 0.5}
+                }
+            },
+            {
+                name: 'MA10',
+                type: 'line',
+                data: calculateMA(10),
+                smooth: true,
+                lineStyle: {
+                    normal: {opacity: 0.5}
+                }
+            },
+            {
+                name: 'MA20',
+                type: 'line',
+                data: calculateMA(20),
+                smooth: true,
+                lineStyle: {
+                    normal: {opacity: 0.5}
+                }
+            },
+            {
+                name: 'MA30',
+                type: 'line',
+                data: calculateMA(30),
+                smooth: true,
+                lineStyle: {
+                    normal: {opacity: 0.5}
+                }
+            },
+
+        ]
+    };
+    //初始化echarts实例(这里的kline_1要根据自己的div的id进行修改.)
+    var myChart = echarts.init(document.getElementById('kline_1'));
+    //使用制定的配置项和数据显示图表
+    myChart.setOption(option);
+</script>
+</body>
+</html>

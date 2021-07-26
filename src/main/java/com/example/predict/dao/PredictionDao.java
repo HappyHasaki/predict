@@ -2,6 +2,7 @@ package com.example.predict.dao;
 
 import com.example.predict.entity.PredictionEntity;
 import org.hibernate.query.Query;
+import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
  * @Author zlm
  * @Date 2021/4/10 1:16
  */
+@Repository
 public class PredictionDao extends BaseDao<PredictionEntity> {
     public PredictionDao() {
         setEntityClass(PredictionEntity.class);
